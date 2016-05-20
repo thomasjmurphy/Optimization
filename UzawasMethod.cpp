@@ -10,14 +10,21 @@ using namespace arma;
 //using namespace boost::numeric::ublas;
 
 
-//Uzawa's method. Let A be symmetric positive definite with dim = n.
-//Note A is square since it is symmetric.
-//Here C is an mxn matrix of constraints
-//Lagrange is an mx1 vector of lagrange multipliers
-//p is a parameter used in the convergence algorithm. It must be within certain bounds
-//to ensure convergence of the algorithm.
-//Some of the mat variables below are actually vectors. 
-//We leave them as nx1 mats for simplicity.
+/*
+Uzawa's method: Minimize the quadratic functional (Av,v) - (b,v) with the constraints: Cv <= d.
+Here A must be symmetric positive definite and has dim = n.
+Note A is square since it is symmetric.
+There are m constraints and hence C is an mxn matrix.
+
+
+Lagrange is an mx1 vector of lagrange multipliers
+p is a parameter used in the convergence algorithm. It must be within certain bounds
+to ensure convergence of the algorithm.
+Some of the mat variables below are actually vectors. We leave them as nx1 mats for simplicity.
+
+REFERENCE:
+Introduction to Numerical Linear Algebra and Optimization. Philippe G. Ciarlet.
+*/
 
 mat UzawasMethod(mat A, mat b, mat C, mat d, double p, int iterations)
 {
@@ -39,19 +46,27 @@ mat UzawasMethod(mat A, mat b, mat C, mat d, double p, int iterations)
     return solution;
 }
 
-/*EXAMPLE
+/*EXAMPLE 
+Minimize 2x_1^2 + x_2^2 with respect to x_2 >= x_1 + 1
 
 mat a(2,2);
     a(0,0) = 2; a(0,1) = 0;
     a(1,0) = 0; a(1,1) = 1;
-    mat b(2,1); b(0,0) = 0; b(1,0) = 0;
-    mat c(1,2); c(0,0) = 1; c(0,1) = -1;
-    mat d(1,1); d(0,0) = -1;
+    
+mat b(2,1); 
+    b(0,0) = 0; 
+    b(1,0) = 0;
+
+mat c(1,2); 
+    c(0,0) = 1; c(0,1) = -1;
+
+mat d(1,1); 
+    d(0,0) = -1;
     
     mat s = UzawasMethod(a,b,c,d,.1,40);
     cout << s;
     
-One can check directly using simple Lagrange Multiplier techniques that 
+One can check directly using Lagrange Multiplier techniques that 
 the solution given by the code for this example is indeed correct. 
-
+x_1 = -1/3,  x_2 = 2/3
 */
